@@ -104,9 +104,9 @@ For example, if you want to generate speech of all testing set split from LJSpee
 
 ```bash
 sh egs/tts/VITS/run.sh --stage 3 --gpu "0" \
-	--infer_expt_dir Amphion/ckpts/tts/[YourExptName] \
-	--infer_output_dir Amphion/ckpts/tts/[YourExptName]/result \
-	--infer_mode "batch" \
+    --infer_expt_dir Amphion/ckpts/tts/[YourExptName] \
+    --infer_output_dir Amphion/ckpts/tts/[YourExptName]/result \
+    --infer_mode "batch" \
     --infer_dataset "LJSpeech" \
     --infer_testing_set "test"
 ```
@@ -115,13 +115,13 @@ Or, if you want to generate a single clip of speech from a given text, just run:
 
 ```bash
 sh egs/tts/VITS/run.sh --stage 3 --gpu "0" \
-	--infer_expt_dir Amphion/ckpts/tts/[YourExptName] \
-	--infer_output_dir Amphion/ckpts/tts/[YourExptName]/result \
-	--infer_mode "single" \
+    --infer_expt_dir Amphion/ckpts/tts/[YourExptName] \
+    --infer_output_dir Amphion/ckpts/tts/[YourExptName]/result \
+    --infer_mode "single" \
     --infer_text "This is a clip of generated speech with the given text from a TTS model."
 ```
 
-We will release a pre-trained VITS model trained on LJSpeech. So you can download the pre-trained model and generate speech following the above inference instruction.
+We released a pre-trained Amphion VITS model trained on LJSpeech. So you can download the pre-trained model [here](https://huggingface.co/amphion/vits-ljspeech) and generate speech following the above inference instruction.
 
 
 ```bibtex

@@ -118,16 +118,16 @@ For example, if you want to generate a single clip of speech, just run:
 
 ```bash
 sh egs/tts/VALLE/run.sh --stage 3 --gpu "0" \
-	--infer_expt_dir Amphion/ckpts/tts/[YourExptName] \
-	--infer_output_dir Amphion/ckpts/tts/[YourExptName]/result \
-	--infer_mode "single" \
+    --infer_expt_dir Amphion/ckpts/tts/[YourExptName] \
+    --infer_output_dir Amphion/ckpts/tts/[YourExptName]/result \
+    --infer_mode "single" \
     --infer_text "This is a clip of generated speech with the given text from a TTS model." \
     --infer_text_prompt "But even the unsuccessful dramatist has his moments." \
     --infer_audio_prompt egs/tts/VALLE/prompt_examples/7176_92135_000004_000000.wav
 ```
 
 
-We will release a pre-trained VALL-E. So you can download the pre-trained model and generate speech following the above inference instruction.
+We released a pre-trained Amphion VALL-E model. So you can download the pre-trained model [here](https://huggingface.co/amphion/valle-libritts) and generate speech following the above inference instruction.
 
 ```bibtex
 @article{wang2023neural,
