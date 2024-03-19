@@ -216,6 +216,9 @@ def main():
     args = build_parser().parse_args()
     cfg = load_config(args.config)
 
+    # TODO: to change this hard code
+    cfg.preprocess.pitch_extractor = "crepe"
+
     # CUDA settings
     cuda_relevant()
 
@@ -235,7 +238,10 @@ def main():
         output_root_path = args.output_dir
         for audio_path in tqdm(audio_list):
             audio_name = audio_path.split("/")[-1].split(".")[0]
-            args.output_dir = os.path.join(output_root_path, audio_name)
+            args.output_dir = os.path.join(
+                output_root_path,
+                "{}_{}".format(audio_name, cfg.preprocess.pitch_extractor),
+            )
             print("\n{}\nConversion for {}...\n".format("*" * 10, audio_name))
 
             cfg.inference.source_audio_path = audio_path

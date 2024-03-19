@@ -528,7 +528,6 @@ def extract_utt_content_features_dataloader(cfg, metadata, num_workers):
 
                     batch_content_features = extractor.extract_content_features(
                         wavs,
-                        lens,
                     )
                     for index, utt in enumerate(_metadata):
                         extractor.save_feature(utt, batch_content_features[index])
@@ -562,7 +561,7 @@ def extract_utt_content_features_dataloader(cfg, metadata, num_workers):
                     _metadata, wavs, lens = items
 
                     batch_content_features = extractor.extract_content_features(
-                        wavs, lens
+                        wavs,
                     )
                     for index, utt in enumerate(_metadata):
                         extractor.save_feature(utt, batch_content_features[index])

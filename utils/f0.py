@@ -176,7 +176,7 @@ def get_f0_features_using_harvest(audio, mel_len, fs, hop_length, f0_min, f0_max
     return f0
 
 
-def get_f0_features_using_crepe(
+def get_f0_features_using_crepe_legacy(
     audio, mel_len, fs, hop_length, hop_length_new, f0_min, f0_max, threshold=0.3
 ):
     """Using torchcrepe to extract the f0 feature.
@@ -229,6 +229,35 @@ def get_f0_features_using_crepe(
     return f0
 
 
+def get_f0_features_using_crepe(audio, cfg):
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    audio_torch = torch.FloatTensor(audio).unsqueeze(0).to(device)
+
+    crepe_pitch, pd = torchcrepe.predict(
+        audio_torch,
+        cfg.sample_rate,
+        cfg.hop_size,
+        fmin=cfg.f0_min,
+        fmax=cfg.f0_max,
+        return_periodicity=True,
+    )
+
+    threshold = 0.3
+
+    # Filter, de-silence, set up threshold for unvoiced part
+    pd = torchcrepe.filter.median(pd, 3)
+    pd = torchcrepe.threshold.Silence(-60.0)(pd, audio_torch, cfg.sample_rate, 256)
+    crepe_pitch = torchcrepe.threshold.At(threshold)(crepe_pitch, pd)
+    crepe_pitch = torchcrepe.filter.mean(crepe_pitch, 3)
+
+    # Convert unvoiced part to 0hz
+    crepe_pitch = torch.where(
+        torch.isnan(crepe_pitch), torch.full_like(crepe_pitch, 0), crepe_pitch
+    )
+
+    return crepe_pitch[0].cpu().numpy()
+
+
 def get_f0(audio, cfg, use_interpolate=False, return_uv=False):
     if cfg.pitch_extractor == "dio":
         f0 = get_f0_features_using_dio(audio, cfg)
@@ -236,6 +265,8 @@ def get_f0(audio, cfg, use_interpolate=False, return_uv=False):
         f0 = get_f0_features_using_pyin(audio, cfg)
     elif cfg.pitch_extractor == "parselmouth":
         f0 = get_f0_features_using_parselmouth(audio, cfg)
+    elif cfg.pitch_extractor == "crepe":
+        f0 = get_f0_features_using_crepe(audio, cfg)
 
     if use_interpolate:
         f0, uv = interpolate(f0)
