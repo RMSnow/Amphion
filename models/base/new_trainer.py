@@ -297,6 +297,9 @@ class BaseTrainer(object):
                 # Remove old checkpoints
                 to_remove = []
                 for idx in hit_dix:
+                    while idx >= len(self.checkpoints_path):
+                        self.checkpoints_path.append([])
+
                     self.checkpoints_path[idx].append(path)
                     while len(self.checkpoints_path[idx]) > self.keep_last[idx]:
                         to_remove.append((idx, self.checkpoints_path[idx].pop(0)))

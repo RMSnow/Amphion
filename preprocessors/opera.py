@@ -8,6 +8,7 @@ import json
 import os
 from tqdm import tqdm
 import torchaudio
+import librosa
 from glob import glob
 from collections import defaultdict
 
@@ -108,13 +109,7 @@ def main(output_path, dataset_path):
     test_output_file = os.path.join(save_dir, "test.json")
     singer_dict_file = os.path.join(save_dir, "singers.json")
     utt2singer_file = os.path.join(save_dir, "utt2singer")
-    if (
-        has_existed(train_output_file)
-        and has_existed(test_output_file)
-        and has_existed(singer_dict_file)
-        and has_existed(utt2singer_file)
-    ):
-        return
+
     utt2singer = open(utt2singer_file, "w")
 
     # Load
@@ -147,8 +142,7 @@ def main(output_path, dataset_path):
                 res["Path"] = os.path.join(opera_path, res["Path"])
                 assert os.path.exists(res["Path"])
 
-                waveform, sample_rate = torchaudio.load(res["Path"])
-                duration = waveform.size(-1) / sample_rate
+                duration = librosa.get_duration(filename=res["Path"])
                 res["Duration"] = duration
 
                 if duration <= 1e-8:

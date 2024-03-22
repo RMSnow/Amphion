@@ -41,7 +41,8 @@ class BaseTestDataset(torch.utils.data.Dataset):
     def get_metadata(self):
         path = Path(self.args.source)
         if path.suffix == ".json" or path.suffix == ".jsonc":
-            metadata = json5.load(open(self.args.source, "r"))
+            with open(self.args.source, "r", encoding="utf-8") as f:
+                metadata = json5.load(f)
         elif path.suffix == ".yaml" or path.suffix == ".yml":
             metadata = yaml.full_load(open(self.args.source, "r"))
         else:
