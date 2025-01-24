@@ -4,4 +4,5 @@ flow_matching_transformer/*trainer.py
 !vevo/config/*.npz
 
 !vevo/wav/*.wav
+!vevo/output_debug/*.wav
 vevo/wav/output*.wav
