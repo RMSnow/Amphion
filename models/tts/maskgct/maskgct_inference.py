@@ -7,11 +7,14 @@ from models.tts.maskgct.maskgct_utils import *
 from huggingface_hub import hf_hub_download
 import safetensors
 import soundfile as sf
+import os
+from tqdm import tqdm
+import pandas as pd
 
 if __name__ == "__main__":
 
     # build model
-    device = torch.device("cuda:0")
+    device = torch.device("cuda")
     cfg_path = "./models/tts/maskgct/config/maskgct.json"
     cfg = load_config(cfg_path)
     # 1. build semantic model (w2v-bert-2.0)
@@ -28,28 +31,42 @@ if __name__ == "__main__":
     s2a_model_1layer = build_s2a_model(cfg.model.s2a_model.s2a_1layer, device)
     s2a_model_full = build_s2a_model(cfg.model.s2a_model.s2a_full, device)
 
+    local_dir = "/storage/zhangxueyao/workspace/SpeechGenerationYC/pretrained/MaskGCT-Pretrained"
+
     # download checkpoint
     # download semantic codec ckpt
     semantic_code_ckpt = hf_hub_download(
-        "amphion/MaskGCT", filename="semantic_codec/model.safetensors"
+        "amphion/MaskGCT",
+        filename="semantic_codec/model.safetensors",
+        cache_dir=local_dir,
     )
     # download acoustic codec ckpt
     codec_encoder_ckpt = hf_hub_download(
-        "amphion/MaskGCT", filename="acoustic_codec/model.safetensors"
+        "amphion/MaskGCT",
+        filename="acoustic_codec/model.safetensors",
+        cache_dir=local_dir,
     )
     codec_decoder_ckpt = hf_hub_download(
-        "amphion/MaskGCT", filename="acoustic_codec/model_1.safetensors"
+        "amphion/MaskGCT",
+        filename="acoustic_codec/model_1.safetensors",
+        cache_dir=local_dir,
     )
     # download t2s model ckpt
     t2s_model_ckpt = hf_hub_download(
-        "amphion/MaskGCT", filename="t2s_model/model.safetensors"
+        "amphion/MaskGCT",
+        filename="t2s_model/model.safetensors",
+        cache_dir=local_dir,
     )
     # download s2a model ckpt
     s2a_1layer_ckpt = hf_hub_download(
-        "amphion/MaskGCT", filename="s2a_model/s2a_model_1layer/model.safetensors"
+        "amphion/MaskGCT",
+        filename="s2a_model/s2a_model_1layer/model.safetensors",
+        cache_dir=local_dir,
     )
     s2a_full_ckpt = hf_hub_download(
-        "amphion/MaskGCT", filename="s2a_model/s2a_model_full/model.safetensors"
+        "amphion/MaskGCT",
+        filename="s2a_model/s2a_model_full/model.safetensors",
+        cache_dir=local_dir,
     )
 
     # load semantic codec
@@ -63,13 +80,6 @@ if __name__ == "__main__":
     safetensors.torch.load_model(s2a_model_1layer, s2a_1layer_ckpt)
     safetensors.torch.load_model(s2a_model_full, s2a_full_ckpt)
 
-    # inference
-    prompt_wav_path = "./models/tts/maskgct/wav/prompt.wav"
-    save_path = "generated_audio.wav"
-    prompt_text = " We do not break. We never give in. We never back down."
-    target_text = "In this paper, we introduce MaskGCT, a fully non-autoregressive TTS model that eliminates the need for explicit alignment information between text and speech supervision."
-    # Specify the target duration (in seconds). If target_len = None, we use a simple rule to predict the target duration.
-    target_len = 18
     maskgct_inference_pipeline = MaskGCT_Inference_Pipeline(
         semantic_model,
         semantic_codec,
@@ -83,8 +93,33 @@ if __name__ == "__main__":
         device,
     )
 
-    recovered_audio = maskgct_inference_pipeline.maskgct_inference(
-        prompt_wav_path, prompt_text, target_text, "en", "en", target_len=target_len
+    df = pd.read_csv(
+        "/storage/zhangxueyao/workspace/SpeechGenerationYC/EvalSet/libritts-p-amc2025/libritts-p_with_ref.csv"
     )
+    output_sample_ids = df["sample_id"].tolist()
+    target_text_list = df["text"].tolist()
+    ref_wav_path_list = df["ref_wav_path"].tolist()
+    ref_text_list = df["ref_wav_text"].tolist()
 
-    sf.write(save_path, recovered_audio, 24000)
+    save_dir = os.path.join(
+        "/storage/zhangxueyao/workspace/SpeechGenerationYC/EvalSet/libritts-p-amc2025/results/MaskGCT"
+    )
+    os.makedirs(save_dir, exist_ok=True)
+
+    for i, sample_id in enumerate(tqdm(output_sample_ids)):
+        ref_wav_path = os.path.join(
+            "/storage/zhangxueyao/workspace/SpeechGenerationYC/EvalSet/libritts-p-amc2025/",
+            ref_wav_path_list[i],
+        )
+        output_path = os.path.join(save_dir, f"{sample_id}.wav")
+
+        recovered_audio = maskgct_inference_pipeline.maskgct_inference(
+            ref_wav_path,
+            ref_text_list[i],
+            target_text_list[i],
+            "en",
+            "en",
+            target_len=None,
+        )
+
+        sf.write(output_path, recovered_audio, 24000)
