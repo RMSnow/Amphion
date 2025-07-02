@@ -1,3 +1,5 @@
 output
 !config/whisper_stats.pt
 !wav/*.wav
+
+svcc2025_final

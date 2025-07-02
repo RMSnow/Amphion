@@ -1,8 +1,67 @@
-# Copyright (c) 2023 Amphion.
-#
-# This source code is licensed under the MIT license found in the
-# LICENSE file in the root directory of this source tree.
+---
+license: cc-by-nc-nd-4.0
+datasets:
+- amphion/Emilia-Dataset
+language:
+- en
+- zh
+- ja
+- ko
+- de
+- fr
+tags:
+- tts
+- vc
+- svs
+- svc
+- music
+---
 
+# Vevo1.5
+
+[![blog](https://img.shields.io/badge/Vevo1.5-Blog-blue.svg)](https://veiled-army-9c5.notion.site/Vevo1-5-1d2ce17b49a280b5b444d3fa2300c93a)
+[![arXiv](https://img.shields.io/badge/Vevo-Paper-COLOR.svg)](https://openreview.net/pdf?id=anQDiQZhDP)
+[![hf](https://img.shields.io/badge/%F0%9F%A4%97%20HuggingFace-model-yellow)](https://huggingface.co/amphion/VevoSing)
+
+We present **Vevo1.5**, a versatile zero-shot voice imitation framework capable of modeling both speech and singing voices. This framework offers two key features: 
+
+1. Unified speech and singing voice modeling.
+2. Fine-grained control over multiple voice attributes, including text, melody, style, and melody. 
+
+For a hands-on demonstration of Vevo1.5's capabilities, we invite readers to explore [our accompanying blog post](https://veiled-army-9c5.notion.site/Vevo1-5-1d2ce17b49a280b5b444d3fa2300c93a).
+
+## Pre-trained Models
+
+We have included the following pre-trained models at Amphion:
+
+| Model                           | Description                                                                                                                                                                                                                                                           | Pre-trained Data and Checkpoint                                                                                                                                                                                                                           |
+| ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Prosody Tokenizer**           | Converting speech/singing waveform to **coarse-grained prosody tokens** (which is also be interpreted as *melody contour* from a musical perspective). It is a single codebook VQ-VAE with a vocabulary size of 512. The frame rate is 6.25 Hz. (i.e., **56.25 bps**) | [🤗 Emilia-101k, Sing-0.4k](https://huggingface.co/amphion/Vevo1.5/tree/main/tokenizer/prosody_fvq512_6.25hz)                                                                                                                                              |
+| **Content-Style Tokenizer**     | Converting speech/singing waveform to **fine-grained content-style tokens**. It is a single codebook VQ-VAE with a vocabulary size of 16384. The frame rate is 12.5 Hz. (i.e., **175 bps**)                                                                           | [🤗 Emilia-101k, Sing-0.4k](https://huggingface.co/amphion/Vevo1.5/tree/main/tokenizer/contentstyle_fvq16384_12.5hz)                                                                                                                                       |
+| **Auto-regressive Transformer** | Predicting content-style tokens from phone tokens (and optionally, prosody tokens) with an auto-regressive transformer (780M).                                                                                                                                        | [🤗 Emilia-101k, Sing-0.4k](https://huggingface.co/amphion/Vevo1.5/tree/main/contentstyle_modeling/ar_emilia101k_sing0.4k) <br>[🤗 Emilia-101k, SingNet-7k](https://huggingface.co/amphion/Vevo1.5/tree/main/contentstyle_modeling/ar_emilia101k_singnet7k) |
+| **Flow-matching Transformer**   | Predicting mel-spectrogram from content-style tokens with a flow-matching transformer (350M).                                                                                                                                                                         | [🤗 Emilia-101k, Sing-0.4k](https://huggingface.co/amphion/Vevo1.5/tree/main/acoustic_modeling/fm_emilia101k_sing0.4k) <br> [🤗 Emilia-101k, SingNet-7k](https://huggingface.co/amphion/Vevo1.5/tree/main/acoustic_modeling/fm_emilia101k_singnet7k)        |
+| **Vocoder**                     | Predicting audio from mel-spectrogram with a Vocos-based vocoder (250M).                                                                                                                                                                                              | [🤗 Emilia-101k](https://huggingface.co/amphion/Vevo/tree/main/acoustic_modeling/Vocoder) <br>[🤗 Emilia-101k, SingNet-3k](https://huggingface.co/amphion/Vevo1.5/tree/main/acoustic_modeling/Vocoder)                                                      |
+
+The training data includes:
+
+- **Emilia-101k**: about 101k hours of speech data
+- **Sing-0.4k**: about 400 hours of open-source singing voice data as follows: 
+  | Dataset Name | \#Hours   |
+  | ------------ | --------- |
+  | ACESinger    | 320.6     |
+  | OpenSinger   | 45.7      |
+  | M4Singer     | 28.4      |
+  | Popbutfy     | 23.8      |
+  | PopCS        | 11.5      |
+  | Opencpop     | 5.1       |
+  | CSD          | 3.8       |
+  | **Total**    | **438.9** |
+- **SingNet-7k**: about 7,000 hours of internal singing voice data, preprocessed using the [SingNet pipeline](https://openreview.net/pdf?id=X6ffdf6nh3). The SingNet-3k is a 3000-hour subset of SingNet-7k.
+
+## Usage
+You can refer to our [recipe](https://github.com/open-mmlab/Amphion/blob/vevosing/models/svc/vevosing/README.md) at GitHub for more usage details. For example, to use Vevo1.5, after you clone the Amphion github repository, you can use the script like:
+
+```python
 import os
 from huggingface_hub import snapshot_download
 
@@ -119,7 +178,7 @@ def load_inference_pipeline():
     local_dir = snapshot_download(
         repo_id="amphion/Vevo1.5",
         repo_type="model",
-        local_dir="./pretrained/Vevo1.5",
+        cache_dir="./ckpts/Vevo1.5",
         allow_patterns=["tokenizer/prosody_fvq512_6.25hz/*"],
     )
     prosody_tokenizer_ckpt_path = os.path.join(
@@ -130,7 +189,7 @@ def load_inference_pipeline():
     local_dir = snapshot_download(
         repo_id="amphion/Vevo1.5",
         repo_type="model",
-        local_dir="./pretrained/Vevo1.5",
+        cache_dir="./ckpts/Vevo1.5",
         allow_patterns=["tokenizer/contentstyle_fvq16384_12.5hz/*"],
     )
     contentstyle_tokenizer_ckpt_path = os.path.join(
@@ -143,7 +202,7 @@ def load_inference_pipeline():
     local_dir = snapshot_download(
         repo_id="amphion/Vevo1.5",
         repo_type="model",
-        local_dir="./pretrained/Vevo1.5",
+        cache_dir="./ckpts/Vevo1.5",
         allow_patterns=[f"contentstyle_modeling/{model_name}/*"],
     )
 
@@ -159,7 +218,7 @@ def load_inference_pipeline():
     local_dir = snapshot_download(
         repo_id="amphion/Vevo1.5",
         repo_type="model",
-        local_dir="./pretrained/Vevo1.5",
+        cache_dir="./ckpts/Vevo1.5",
         allow_patterns=[f"acoustic_modeling/{model_name}/*"],
     )
 
@@ -170,7 +229,7 @@ def load_inference_pipeline():
     local_dir = snapshot_download(
         repo_id="amphion/Vevo1.5",
         repo_type="model",
-        local_dir="./pretrained/Vevo1.5",
+        cache_dir="./ckpts/Vevo1.5",
         allow_patterns=["acoustic_modeling/Vocoder/*"],
     )
 
@@ -311,3 +370,36 @@ if __name__ == "__main__":
         tgt_language="zh",
         style_ref_language="zh",
     )
+
+```
+
+## Citations
+
+If you find this work useful for your research, please cite our paper:
+```bibtex
+@inproceedings{vevo,
+  author       = {Xueyao Zhang and Xiaohui Zhang and Kainan Peng and Zhenyu Tang and Vimal Manohar and Yingru Liu and Jeff Hwang and Dangna Li and Yuhao Wang and Julian Chan and Yuan Huang and Zhizheng Wu and Mingbo Ma},
+  title        = {Vevo: Controllable Zero-Shot Voice Imitation with Self-Supervised Disentanglement},
+  booktitle    = {{ICLR}},
+  publisher    = {OpenReview.net},
+  year         = {2025}
+}
+```
+
+If you use the Vevo1.5 pre-trained models or training recipe of Amphion, please also cite:
+
+```bibtex
+@article{amphion2,
+  title        = {Overview of the Amphion Toolkit (v0.2)},
+  author       = {Jiaqi Li and Xueyao Zhang and Yuancheng Wang and Haorui He and Chaoren Wang and Li Wang and Huan Liao and Junyi Ao and Zeyu Xie and Yiqiao Huang and Junan Zhang and Zhizheng Wu},
+  year         = {2025},
+  journal      = {arXiv preprint arXiv:2501.15442},
+}
+
+@inproceedings{amphion,
+    author={Xueyao Zhang and Liumeng Xue and Yicheng Gu and Yuancheng Wang and Jiaqi Li and Haorui He and Chaoren Wang and Ting Song and Xi Chen and Zihao Fang and Haopeng Chen and Junan Zhang and Tze Ying Tang and Lexiao Zou and Mingxuan Wang and Jun Han and Kai Chen and Haizhou Li and Zhizheng Wu},
+    title={Amphion: An Open-Source Audio, Music and Speech Generation Toolkit},
+    booktitle={{IEEE} Spoken Language Technology Workshop, {SLT} 2024},
+    year={2024}
+}
+```

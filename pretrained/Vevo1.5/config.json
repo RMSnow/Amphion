@@ -1,0 +1,5 @@
+{
+    "download_tracking": {
+        "query_files": ["config.json", "*.safetensors"]
+    }
+}

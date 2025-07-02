@@ -13,9 +13,10 @@ import safetensors
 import numpy as np
 import os
 import yaml
-from IPython.display import display, Audio
 
-import parselmouth
+# from IPython.display import display, Audio
+
+# import parselmouth
 import torchvision
 import random
 import numpy as np
