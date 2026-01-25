@@ -1,9 +1,9 @@
 import sys
-sys.path.append("/data/home/xueyao/workspace")
+import os
 
 import torch
-from Amphion.models.codec.ns3_codec import FACodecRedecoder
-from Amphion.models.codec.ns3_codec import FACodecEncoder, FACodecDecoder
+from models.codec.ns3_codec import FACodecRedecoder
+from models.codec.ns3_codec import FACodecEncoder, FACodecDecoder
 from huggingface_hub import hf_hub_download
 import librosa
 import torchaudio
@@ -35,8 +35,12 @@ fa_decoder = FACodecDecoder(
     use_gr_residual_phone=True,
 )
 
-encoder_ckpt = hf_hub_download(repo_id="amphion/naturalspeech3_facodec", filename="ns3_facodec_encoder.bin")
-decoder_ckpt = hf_hub_download(repo_id="amphion/naturalspeech3_facodec", filename="ns3_facodec_decoder.bin")
+encoder_ckpt = hf_hub_download(
+    repo_id="amphion/naturalspeech3_facodec", filename="ns3_facodec_encoder.bin"
+)
+decoder_ckpt = hf_hub_download(
+    repo_id="amphion/naturalspeech3_facodec", filename="ns3_facodec_decoder.bin"
+)
 fa_encoder.load_state_dict(torch.load(encoder_ckpt))
 fa_decoder.load_state_dict(torch.load(decoder_ckpt))
 
@@ -44,7 +48,9 @@ fa_encoder.eval()
 fa_decoder.eval()
 
 fa_redecoder = FACodecRedecoder()
-redecoder_ckpt = hf_hub_download(repo_id="amphion/naturalspeech3_facodec", filename="ns3_facodec_redecoder.bin")
+redecoder_ckpt = hf_hub_download(
+    repo_id="amphion/naturalspeech3_facodec", filename="ns3_facodec_redecoder.bin"
+)
 fa_redecoder.load_state_dict(torch.load(redecoder_ckpt))
 
 fa_redecoder.eval()
@@ -66,6 +72,7 @@ def load_wav(test_wav_path):
 
     return test_wav
 
+
 def inference(content_wav_path, reference_wav_path, save_path):
     wav_a = load_wav(content_wav_path)
     wav_b = load_wav(reference_wav_path)
@@ -74,20 +81,28 @@ def inference(content_wav_path, reference_wav_path, save_path):
         enc_out_a = fa_encoder(wav_a)
         enc_out_b = fa_encoder(wav_b)
 
-        vq_post_emb_a, vq_id_a, _, quantized_a, spk_embs_a = fa_decoder(enc_out_a, eval_vq=False, vq=True)
-        vq_post_emb_b, vq_id_b, _, quantized_b, spk_embs_b = fa_decoder(enc_out_b, eval_vq=False, vq=True)
+        vq_post_emb_a, vq_id_a, _, quantized_a, spk_embs_a = fa_decoder(
+            enc_out_a, eval_vq=False, vq=True
+        )
+        vq_post_emb_b, vq_id_b, _, quantized_b, spk_embs_b = fa_decoder(
+            enc_out_b, eval_vq=False, vq=True
+        )
 
         # convert speaker
-        vq_post_emb_a_to_b = fa_redecoder.vq2emb(vq_id_a, spk_embs_b, use_residual=False)
+        vq_post_emb_a_to_b = fa_redecoder.vq2emb(
+            vq_id_a, spk_embs_b, use_residual=False
+        )
         recon_wav_a_to_b = fa_redecoder.inference(vq_post_emb_a_to_b, spk_embs_b)
 
         # print("recon_wav_a_to_b", recon_wav_a_to_b.shape)
         torchaudio.save(save_path, recon_wav_a_to_b[0].cpu(), sample_rate=16000)
 
+
 def get_all_wav_paths(root_dir):
     res = glob(os.path.join(root_dir, "*.wav"))
     res.sort()
     return res
+
 
 def loading_inference_pairs():
     ### g0 ###
@@ -153,7 +168,12 @@ if __name__ == "__main__":
     output_root = "/data/home/xueyao/workspace/Amphion/results"
     model_name = "facodec"
 
-    g0_cont_ref_pairs,g1_cont_ref_pairs,accent_cont_ref_pairs,emotion_cont_ref_pairs, = loading_inference_pairs()
+    (
+        g0_cont_ref_pairs,
+        g1_cont_ref_pairs,
+        accent_cont_ref_pairs,
+        emotion_cont_ref_pairs,
+    ) = loading_inference_pairs()
 
     group_dict = {
         "g0": g0_cont_ref_pairs,
