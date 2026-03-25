@@ -21,6 +21,7 @@
 #
 
 """Scorer interface module."""
+
 from abc import ABC
 from typing import Any
 from typing import List

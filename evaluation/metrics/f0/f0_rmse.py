@@ -12,7 +12,6 @@ import numpy as np
 from utils.util import JsonHParams
 from utils.f0 import get_f0_features_using_parselmouth, get_pitch_sub_median
 
-
 ZERO = 1e-8
 
 

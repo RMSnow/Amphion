@@ -5,6 +5,7 @@
 """
 From DAC: https://github.com/descriptinc/descript-audio-codec/blob/main/dac/model
 """
+
 from typing import Union
 
 import numpy as np

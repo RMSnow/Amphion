@@ -17,7 +17,6 @@ import numpy as np
 import glob
 from torch.nn import functional as F
 
-
 try:
     from ruamel.yaml import YAML as yaml
 except:

@@ -6,6 +6,7 @@
 """
 Based on: https://github.com/crowsonkb/k-diffusion
 """
+
 import random
 
 import numpy as np

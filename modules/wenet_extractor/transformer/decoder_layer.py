@@ -21,6 +21,7 @@
 #
 
 """Decoder self-attention layer definition."""
+
 from typing import Optional, Tuple
 
 import torch

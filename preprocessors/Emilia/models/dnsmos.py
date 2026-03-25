@@ -17,7 +17,6 @@ import pandas as pd
 import tqdm
 import warnings
 
-
 warnings.filterwarnings("ignore")
 
 SAMPLING_RATE = 16000

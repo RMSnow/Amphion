@@ -407,7 +407,7 @@ class GeneratorLoss(nn.Module):
         ) = outputs_g
 
         # parse discriminator output
-        (p_hat, p) = outputs_d
+        p_hat, p = outputs_d
 
         # calculate losses
         mel_loss = self.mel_loss(speech_hat_, speech_)

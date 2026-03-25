@@ -11,7 +11,6 @@ from torch.nn.utils import weight_norm, spectral_norm
 from torch import nn
 from modules.vocoder_blocks import *
 
-
 LRELU_SLOPE = 0.1
 
 

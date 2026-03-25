@@ -36,6 +36,7 @@
 # SOFTWARE.
 
 """Core vector quantization implementation."""
+
 import typing as tp
 
 from einops import rearrange, repeat

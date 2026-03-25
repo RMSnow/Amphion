@@ -11,7 +11,6 @@ from torch.nn.utils.rnn import pad_sequence
 
 from models.base.emilia_dataset import EmiliaDataset, WarningFilter
 
-
 filter = WarningFilter()
 logging.getLogger("phonemizer").addFilter(filter)
 logging.getLogger("qcloud_cos.cos_client").addFilter(filter)

@@ -21,6 +21,7 @@
 #
 
 """ScorerInterface implementation for CTC."""
+
 import numpy as np
 import torch
 

@@ -20,6 +20,7 @@
 # }
 #
 """Decoder definition."""
+
 from typing import Tuple, List, Optional
 
 import torch

@@ -10,7 +10,6 @@ import glob
 from collections import defaultdict
 from tqdm import tqdm
 
-
 # Train: male 20 hours, female 10 hours
 TRAIN_MALE_MAX_SECONDS = 20 * 3600
 TRAIN_FEMALE_MAX_SECONDS = 10 * 3600

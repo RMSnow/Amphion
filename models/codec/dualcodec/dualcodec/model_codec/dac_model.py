@@ -5,6 +5,7 @@
 """
 From DAC: https://github.com/descriptinc/descript-audio-codec/blob/main/dac/model
 """
+
 import math
 from typing import List
 from typing import Union

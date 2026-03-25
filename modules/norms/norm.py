@@ -15,7 +15,6 @@ from torch.nn import functional as F
 from modules.general.scaling import ActivationBalancer
 from modules.general.scaling import BasicNorm as _BasicNorm
 
-
 _shape_t = Union[int, List[int], torch.Size]
 
 

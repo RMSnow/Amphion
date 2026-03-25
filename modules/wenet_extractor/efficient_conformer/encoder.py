@@ -21,6 +21,7 @@
 #
 
 """Encoder definition."""
+
 from typing import Tuple, Optional, List, Union
 
 import torch
@@ -624,7 +625,7 @@ class EfficientConformerEncoder(torch.nn.Module):
                 )
 
             chunk_xs = xs[:, cur:end, :]
-            (y, att_cache, cnn_cache) = self.forward_chunk(
+            y, att_cache, cnn_cache = self.forward_chunk(
                 chunk_xs, offset, required_cache_size, att_cache, cnn_cache, att_mask
             )
             outputs.append(y)

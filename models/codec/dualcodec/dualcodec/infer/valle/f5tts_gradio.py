@@ -40,7 +40,6 @@ from f5_tts.infer.utils_infer import (
     save_spectrogram,
 )
 
-
 DEFAULT_TTS_MODEL = "F5-TTS_v1"
 tts_model_choice = DEFAULT_TTS_MODEL
 
@@ -190,15 +189,13 @@ def infer(
 
 
 with gr.Blocks() as app_credits:
-    gr.Markdown(
-        """
+    gr.Markdown("""
 # Credits
 
 * [mrfakename](https://github.com/fakerybakery) for the original [online demo](https://huggingface.co/spaces/mrfakename/E2-F5-TTS)
 * [RootingInLoad](https://github.com/RootingInLoad) for initial chunk generation and podcast app exploration
 * [jpgallegoar](https://github.com/jpgallegoar) for multiple speech-type generation & voice chat
-"""
-    )
+""")
 with gr.Blocks() as app_tts:
     gr.Markdown("# Batched TTS")
     ref_audio_input = gr.Audio(label="Reference Audio", type="filepath")
@@ -307,17 +304,14 @@ def parse_speechtypes_text(gen_text):
 
 with gr.Blocks() as app_multistyle:
     # New section for multistyle generation
-    gr.Markdown(
-        """
+    gr.Markdown("""
     # Multiple Speech-Type Generation
 
     This section allows you to generate multiple speech types or multiple people's voices. Enter your text in the format shown below, and the system will generate speech using the appropriate type. If unspecified, the model will use the regular speech type. The current speech type will be used until the next speech type is specified.
-    """
-    )
+    """)
 
     with gr.Row():
-        gr.Markdown(
-            """
+        gr.Markdown("""
             **Example Input:**                                                                      
             {Regular} Hello, I'd like to order a sandwich please.                                                         
             {Surprised} What do you mean you're out of bread?                                                                      
@@ -325,18 +319,15 @@ with gr.Blocks() as app_multistyle:
             {Angry} You know what, darn you and your little shop!                                                                       
             {Whisper} I'll just go back home and cry now.                                                                           
             {Shouting} Why me?!                                                                         
-            """
-        )
+            """)
 
-        gr.Markdown(
-            """
+        gr.Markdown("""
             **Example Input 2:**                                                                                
             {Speaker1_Happy} Hello, I'd like to order a sandwich please.                                                            
             {Speaker2_Regular} Sorry, we're out of bread.                                                                                
             {Speaker1_Sad} I really wanted a sandwich though...                                                                             
             {Speaker2_Whisper} I'll give you the last one I was hiding.                                                                     
-            """
-        )
+            """)
 
     gr.Markdown(
         "Upload different audio clips for each speech type. The first speech type is mandatory. You can add additional speech types by clicking the 'Add Speech Type' button."
@@ -576,16 +567,14 @@ with gr.Blocks() as app_multistyle:
 
 
 with gr.Blocks() as app_chat:
-    gr.Markdown(
-        """
+    gr.Markdown("""
 # Voice Chat
 Have a conversation with an AI using your reference voice! 
 1. Upload a reference audio clip and optionally its transcript.
 2. Load the chat model.
 3. Record your message through your microphone.
 4. The AI will respond using the reference voice.
-"""
-    )
+""")
 
     if not USING_SPACES:
         load_chat_model_btn = gr.Button("Load Chat Model", variant="primary")
@@ -820,8 +809,7 @@ Have a conversation with an AI using your reference voice!
 
 
 with gr.Blocks() as app:
-    gr.Markdown(
-        f"""
+    gr.Markdown(f"""
 # E2/F5 TTS
 
 This is {"a local web UI for [F5 TTS](https://github.com/SWivid/F5-TTS)" if not USING_SPACES else "an online demo for [F5-TTS](https://github.com/SWivid/F5-TTS)"} with advanced batch processing support. This app supports the following TTS models:
@@ -834,8 +822,7 @@ The checkpoints currently support English and Chinese.
 If you're having issues, try converting your reference audio to WAV or MP3, clipping it to 12s with  ✂  in the bottom right corner (otherwise might have non-optimal auto-trimmed result).
 
 **NOTE: Reference text will be automatically transcribed with Whisper if not provided. For best results, keep your reference clips short (<12s). Ensure the audio is fully uploaded before generating.**
-"""
-    )
+""")
 
     last_used_custom = files("f5_tts").joinpath(
         "infer/.cache/last_used_custom_model_info_v1.txt"

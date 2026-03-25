@@ -43,7 +43,7 @@ class SileroVAD:
                 source="github" if not local else "local",
             )
             self.vad_model = vad_model
-            (get_speech_timestamps, _, _, _, _) = utils
+            get_speech_timestamps, _, _, _, _ = utils
             self.get_speech_timestamps = get_speech_timestamps
         except Exception as e:
             raise RuntimeError(f"Failed to load VAD model: {e}")

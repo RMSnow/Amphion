@@ -21,6 +21,7 @@
 #
 
 """ConvolutionModule definition."""
+
 from typing import Tuple
 
 import torch

@@ -410,7 +410,7 @@ class Cnn14(nn.Module):
         latent_x = F.relu_(self.fc1(latent_x))
         latent_output = interpolate(latent_x, 32)
 
-        (x1, _) = torch.max(x, dim=2)
+        x1, _ = torch.max(x, dim=2)
         x2 = torch.mean(x, dim=2)
         x = x1 + x2
         x = F.dropout(x, p=0.5, training=self.training)
@@ -536,7 +536,7 @@ class Cnn6(nn.Module):
         latent_x = F.relu_(self.fc1(latent_x))
         latent_output = interpolate(latent_x, 16)
 
-        (x1, _) = torch.max(x, dim=2)
+        x1, _ = torch.max(x, dim=2)
         x2 = torch.mean(x, dim=2)
         x = x1 + x2
         x = F.dropout(x, p=0.5, training=self.training)
@@ -666,7 +666,7 @@ class Cnn10(nn.Module):
         latent_x = F.relu_(self.fc1(latent_x))
         latent_output = interpolate(latent_x, 32)
 
-        (x1, _) = torch.max(x, dim=2)
+        x1, _ = torch.max(x, dim=2)
         x2 = torch.mean(x, dim=2)
         x = x1 + x2
         x = F.dropout(x, p=0.5, training=self.training)

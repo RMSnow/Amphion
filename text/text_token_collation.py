@@ -11,7 +11,6 @@ import torch
 from text.symbol_table import SymbolTable
 from text import text_to_sequence
 
-
 """
     TextToken: map text to id
 """

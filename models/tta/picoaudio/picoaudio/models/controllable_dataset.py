@@ -37,11 +37,11 @@ class Text_Onset_2_Audio_Dataset(torch.utils.data.Dataset):
         line_event = []
         for event_onset in line_onset_str.split("--"):
             # event_onset : event1__onset1-offset1_onset2-offset2
-            (event, instance) = event_onset.split("__")
+            event, instance = event_onset.split("__")
             line_event.append(event)
             # instance : onset1-offset1_onset2-offset2
             for start_end in instance.split("_"):
-                (start, end) = start_end.split("-")
+                start, end = start_end.split("-")
                 start, end = int(float(start) * 250 / 10), int(float(end) * 250 / 10)
                 if end > 255:
                     break

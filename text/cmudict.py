@@ -7,7 +7,6 @@
 
 import re
 
-
 valid_symbols = [
     "AA",
     "AA0",

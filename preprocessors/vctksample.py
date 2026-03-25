@@ -11,7 +11,6 @@ from collections import defaultdict
 from tqdm import tqdm
 from preprocessors import get_golden_samples_indexes
 
-
 TRAIN_MAX_NUM_EVERY_PERSON = 250
 TEST_MAX_NUM_EVERY_PERSON = 25
 

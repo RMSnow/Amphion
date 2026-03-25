@@ -311,7 +311,7 @@ class MaxEigLimiterFunction(torch.autograd.Function):
     @staticmethod
     def backward(ctx, x_grad, *args):
         with torch.enable_grad():
-            (x_orig, coeffs, new_direction) = ctx.saved_tensors
+            x_orig, coeffs, new_direction = ctx.saved_tensors
             x_orig.requires_grad = True
             num_channels = x_orig.shape[ctx.channel_dim]
             x = x_orig.transpose(ctx.channel_dim, -1).reshape(-1, num_channels)
@@ -762,7 +762,7 @@ def _diag(x: Tensor):  # like .diag(), but works for tensors with 3 dims.
     if x.ndim == 2:
         return x.diag()
     else:
-        (batch, dim, dim) = x.shape
+        batch, dim, dim = x.shape
         x = x.reshape(batch, dim * dim)
         x = x[:, :: dim + 1]
         assert x.shape == (batch, dim)
@@ -783,7 +783,7 @@ def _whitening_metric(x: Tensor, num_groups: int):
     """
     assert x.dtype != torch.float16
     x = x.reshape(-1, x.shape[-1])
-    (num_frames, num_channels) = x.shape
+    num_frames, num_channels = x.shape
     assert num_channels % num_groups == 0
     channels_per_group = num_channels // num_groups
     x = x.reshape(num_frames, num_groups, channels_per_group).transpose(0, 1)
@@ -881,7 +881,7 @@ class Whiten(nn.Module):
             assert 0 < prob <= 1
             self.prob = prob
         else:
-            (self.min_prob, self.max_prob) = prob
+            self.min_prob, self.max_prob = prob
             assert 0 < self.min_prob < self.max_prob <= 1
             self.prob = self.max_prob
 
@@ -1095,7 +1095,7 @@ class MaxEig(torch.nn.Module):
              coeffs: a Tensor of shape (num_frames, 1) that minimizes, or
                 approximately minimizes, (x - coeffs * cur_direction).norm()
         """
-        (num_frames, num_channels) = x.shape
+        num_frames, num_channels = x.shape
         assert num_channels > 1 and num_frames > 1
         assert prev_direction.shape == (num_channels,)
         # `coeffs` are the coefficients of `prev_direction` in x.

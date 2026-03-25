@@ -14,7 +14,6 @@ import torch.nn.functional as F
 
 from math import sqrt
 
-
 Linear = nn.Linear
 ConvTranspose2d = nn.ConvTranspose2d
 

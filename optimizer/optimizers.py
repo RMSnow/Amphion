@@ -460,7 +460,7 @@ class ScaledAdam(BatchedOptimizer):
         """
         assert len(tuples) >= 1
         clipping_scale = group["clipping_scale"]
-        (first_p, first_state, _) = tuples[0]
+        first_p, first_state, _ = tuples[0]
         step = first_state["step"]
         if clipping_scale is None or step == 0:
             # no clipping.  return early on step == 0 because the other

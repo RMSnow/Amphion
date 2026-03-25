@@ -149,7 +149,7 @@ class VocoderInference(object):
         self.logger.info("Initializing accelerate...")
         start = time.monotonic_ns()
         self.accelerator = accelerate.Accelerator()
-        (self.model, self.test_dataloader) = self.accelerator.prepare(
+        self.model, self.test_dataloader = self.accelerator.prepare(
             self.model, self.test_dataloader
         )
         end = time.monotonic_ns()

@@ -6,6 +6,7 @@
 """
 Launch training scripts
 """
+
 from omegaconf import DictConfig, OmegaConf
 from typing import Optional
 import hydra

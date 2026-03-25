@@ -5,6 +5,7 @@
 
 # This code is modified from https://github.com/tensorflow/tensorflow/blob/master/tensorflow/contrib/training/python/training/hparam.py  pylint: disable=line-too-long
 """Hyperparameter values."""
+
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function

@@ -85,11 +85,9 @@ class DistributedSampler:
             self.rank = dist.get_rank()
             self.world_size = dist.get_world_size()
         else:
-            print(
-                "WARNING: distributed not initialized in DistributedSampler! \
+            print("WARNING: distributed not initialized in DistributedSampler! \
                   Defaulting to single rank. \
-                  Or set `manual_dist_sampler` to True in `gluster_opener`."
-            )
+                  Or set `manual_dist_sampler` to True in `gluster_opener`.")
             self.rank = 0
             self.world_size = 1
         worker_info = torch.utils.data.get_worker_info()

@@ -23,7 +23,6 @@ from torch.nn.utils import spectral_norm, weight_norm
 
 from .norm import ConvLayerNorm
 
-
 CONV_NORMALIZATIONS = frozenset(
     [
         "none",
