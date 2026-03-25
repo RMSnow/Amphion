@@ -93,7 +93,7 @@ def load_inference_pipeline():
     device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
 
     local_dir = snapshot_download(
-        repo_id="amphion/Vevo2",
+        repo_id="RMSnow/Vevo2",
         repo_type="model",
         local_dir="./ckpts/Vevo2",
         resume_download=True,
